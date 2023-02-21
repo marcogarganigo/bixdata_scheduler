@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+
+<div class="container">
+    <form action="{% url 'logout' %}" request="POST">
+        {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Logout</button>
+    </form>
+    <div class="container text-center">
+        <form action="{% url 'index' %}" method="POST">
+            {% csrf_token %}
+        <button id="start1" type="submit" value="start" name="start" class="btn btn-success">Start action 1</button>
+        <button id="stop1" type="submit" value="stop" name="stop" class="btn btn-danger">Stop action 1</button>
+        </form>
+        <div id="status-act1" style="background-color: {% if status == 'Running' %}green{% else %}red{% endif %}; width: 7px; height: 7px"></div>
+<p>Status: {{ status }}</p>
+
+    </div>
+</div>
+
+
+
+
+{% endblock %}
