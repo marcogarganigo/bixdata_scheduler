@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- This site is built with github.com/nonoesp/laravel-folio -->
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
+	<title>Download a Website with cURL Following Redirects · Nono Martínez Alonso</title>
+	<link rel="shortcut icon" href="/favicon.png" type="image/png">
+	<link rel="stylesheet" type="text/css" href="/folio/css/folio.css?id=d76bfd3d8c63c720149c">
+
+	<!-- CSRF Token -->
+	<meta name="csrf-token" content="CDYaNO24Dn4WY7LoFqALEMm0KUPn7UHi9V90wmdA">
+
+	<!-- TypeKit -->
+	<link rel="dns-prefetch" href="http://use.typekit.net">
+	<script type="text/javascript" src="//use.typekit.net/fsg5xkx.js"></script>
+	<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+
+	<!-- Icon -->
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+	<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+	<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+	<link rel="manifest" href="/manifest.json">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+	<meta name="theme-color" content="#ffffff">
+
+	<link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png" />
+	<link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-114x114.png" />
+	<meta name="apple-mobile-web-app-title" content="Nono.MA" />
+	<link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png" />
+	<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+	<!-- Tags -->
+	<meta name="description" content="You can download any website as an HTML file (without the site&#039;s assets) using cURL in the command line, using the -L flag to follow any existing redirects.…" />
+	<link rel="image_src" href="https://nono.imgix.net/img/u/src-nono-ma.jpg?fit=fillmax&amp;fill=solid&amp;fill-color=cf3729&amp;w=1200&amp;h=628" />
+	<meta name="author" content="Nono Martínez Alonso" />
+
+	<!-- Open Graph meta data -->
+	<meta property="fb:app_id" content="1727819810847203" />
+	<meta property="og:url" content="https://nono.ma/852" />
+	<meta property="og:image" content="https://nono.imgix.net/img/u/src-nono-ma.jpg?fit=fillmax&amp;fill=solid&amp;fill-color=cf3729&amp;w=1200&amp;h=628" />
+	<meta property="og:title" content="Download a Website with cURL Following Redirects" />
+	<meta property="og:description" content="You can download any website as an HTML file (without the site&#039;s assets) using cURL in the command line, using the -L flag to follow any existing redirects.…" />
+	<meta property="og:type" content="article" />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="900" />
+	<meta property="article:author" content="https://facebook.com/nonoesp" />
+    <meta property="article:modified_time" content="2021-04-15 04:17:31" />
+    <meta property="article:published_time" content="2021-04-15 16:11:09" />
+    <meta property="article:publisher" content="https://facebook.com/nonomartinezalonso" />    
+    <meta property="article:tag" content="code" />
+    <meta property="article:tag" content="curl" />
+    <meta property="article:tag" content="cli" />
+        
+	<!-- Twitter Card -->
+	<meta name="twitter:site" content="@nonoesp" />
+	<meta name="twitter:creator" content="@nonoesp" />
+	<meta name="twitter:title" content="Download a Website with cURL Following Redirects" />
+	<meta name="twitter:description" content="You can download any website as an HTML file (without the site&#039;s assets) using cURL in the command line, using the -L flag to follow any existing redirects.…" />
+	<meta name="twitter:image" content="https://nono.imgix.net/img/u/src-nono-ma.jpg?fit=fillmax&amp;fill=solid&amp;fill-color=cf3729&amp;w=1200&amp;h=628" />
+	<meta name="twitter:card" content="summary_large_image" />
+
+	<!-- RSS -->
+	<link rel="alternate" type="application/atom+xml" href="/feed.xml" />
+
+	<!-- DNS Prefetch · Google Fonts -->
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+
+	<!-- DNS Prefetch · Imgix -->
+	<link rel="dns-prefetch" href="//nono.imgix.net">
+
+	<!-- DNS Prefetch · Folio -->
+	<link rel="dns-prefetch" href="//gettingsimple.imgix.net">
+
+	<!-- Google Analytics -->
+		<link rel="dns-prefetch" href="//www.googletagmanager.com">
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-9M1GHJHB1F"></script>
+	<script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-9M1GHJHB1F');</script>	
+		    <!-- Article -->
+    <meta property="article:published_time" content="2021-04-15 16:11:09"/>
+    <meta property="article:modified_time" content="2021-04-15 04:17:31"/>
+				  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+	
+	
+	
+						<!-- c-header-simple · styling based on frankchimero.com -->
+
+<header class="c-header-simple borderless tight">
+	<div class="[ o-wrap o-wrap--size-full ]">
+		<a href="/" class="[ c-header-simple__name ]">
+
+						
+				Nono.MA
+			
+			
+		</a>
+
+		
+			<nav role="navigation" class="[ c-header-simple__navigation ]">
+				<ul>
+
+					
+												<li>
+							<a href="/says" class="[ navigation-link js--navigation-link-says 
+							 ]" >
+								Blog
+							</a>
+						</li>
+						
+					
+												<li>
+							<a href="https://sketch.nono.ma" class="[ navigation-link js--navigation-link-sketch 
+							 ]" >
+								Sketches
+							</a>
+						</li>
+						
+					
+												<li>
+							<a href="https://gettingsimple.com/podcast" class="[ navigation-link js--navigation-link-podcast 
+							 u-is-external-v2 u-is-external--top-right ]" target="_blank" >
+								Podcast
+							</a>
+						</li>
+						
+					
+												<li>
+							<a href="/about" class="[ navigation-link js--navigation-link-about 
+							 ]" >
+								About
+							</a>
+						</li>
+						
+					
+				</ul>
+			</nav>
+
+    
+				
+		
+				  <div class="[ c-social__wrapper ]">
+
+        <span class="[ c-social m-fa ]">
+
+                      <a href="https://twitter.com/nonoesp" target="_blank" class="fa--social fa__link fa__link--twitter">
+              <i class="fa fa-twitter"></i>
+            </a>
+                      <a href="https://instagram.com/nonoesp" target="_blank" class="fa--social fa__link fa__link--instagram">
+              <i class="fa fa-instagram"></i>
+            </a>
+                      <a href="https://www.youtube.com/c/nonomartinezalonso" target="_blank" class="fa--social fa__link fa__link--youtube-play">
+              <i class="fa fa-youtube-play"></i>
+            </a>
+                      <a href="https://www.facebook.com/nonomartinezalonso" target="_blank" class="fa--social fa__link fa__link--facebook-square">
+              <i class="fa fa-facebook-square"></i>
+            </a>
+          
+        </span>
+
+  </div>
+
+
+		
+	</div>
+</header>
+
+	
+	
+	  
+  
+
+
+  <div style="font-size:0.52em">
+    <div style="font-size:1em">
+  
+    
+    <div class="[  c-item-v2  ]  [ c-item-v2--editorial  c-item-v2--standard ] [ u-pad-b-5x ]">
+	<div class="[ c-item-v2__section ]">
+	<div class="[ c-item-v2__title  ]">
+
+							<h1>
+									Download a Website with cURL Following Redirects
+							</h1>
+					</div>
+
+	
+		<p class="[ c-item-v2__date c-item-v2__date--title
+	  u-pad-b-5x   ]">
+		<span class="c-item-v2__meta">
+																APRIL 15, 2021
+									</span>
+	</p>
+	                
+
+	
+	<div class="[ c-item-v2__body ]">
+		
+		
+				
+		
+		
+		
+		
+				<p>You can download any website as an HTML file (without the site's assets) using cURL in the command line, using the <code>-L</code> flag to follow any existing redirects.</p>
+<pre><code class="language-bash">curl -L https://nono.ma --output nono-ma.html
+</code></pre>
+<p>The manual alternative is to right-click on a website on your browser of choice (say, Google Chrome or Firefox), select <code>Save As..</code>, and save the site as HTML with some of its assets in a subfolder.</p>
+<p>Afterwards, you can <a href="/convert-html-to-markdown-pandoc">convert the downloaded HTML page into a Markdown document</a> with pandoc.</p>
+
+			</div>
+
+	
+			<p class="c-item-v2__tags">
+			<a href="https://nono.ma/says/tag/code" class="c-item-v2__tag u-case-upper">Code</a><a href="https://nono.ma/says/tag/curl" class="c-item-v2__tag u-case-upper">Curl</a><a href="https://nono.ma/says/tag/cli" class="c-item-v2__tag u-case-upper">Cli</a>
+					</p>
+			
+	</div>
+	</div>
+
+  
+    </div>
+  </div>
+
+
+	<footer class="c-footer-v2 c-footer-v2 [ u-pad-b-3x u-mar-t-4x ]">
+
+      <div class="[ o-wrap o-wrap--size-400 o-wrap--palm-size-full u-mar-b-5x ]">
+        <div class="js--subscribe c-subscribe-v2 c-subscribe-v2 c-subscribe-v2--left">
+
+<div class="[ grid ]">
+
+    <div class="grid__item one-whole">
+
+    <p class="c-subscribe-v2__text js--subscribe__label">
+        Receive my publications via email.
+
+    </p>
+
+    <form method="POST" action="https://nono.ma/subscriber/create" accept-charset="UTF-8" class="c-subscribe-v2__form ] [ js--subscribe__form ]"><input name="_token" type="hidden" value="CDYaNO24Dn4WY7LoFqALEMm0KUPn7UHi9V90wmdA">
+    <div id="hp_name_idNPLE33oN2NSm4R_wrap" style="display: none" aria-hidden="true">
+        <input id="hp_name_idNPLE33oN2NSm4R"
+               name="hp_name_idNPLE33oN2NSm4R"
+               type="text"
+               value=""
+                              autocomplete="nope"
+               tabindex="-1">
+        <input name="hp_vld_frm"
+               type="text"
+               value="eyJpdiI6ImJmbzF5UkFxQktTaFk2MzN0c3Azbnc9PSIsInZhbHVlIjoiRUN1c1ZiQXlKS3hscjNScWw5USs2UT09IiwibWFjIjoiYmViOTkwNDA1OGI2NjY4NTc4NjJkNjhjZTZlNzk4MzllZDY5MjUzMzBhNDY0ODIxZDQyZWQyYTQ4Yjg0N2ZhZiIsInRhZyI6IiJ9"
+                              autocomplete="nope"
+               tabindex="-1">
+    </div>
+    <div class="[ grid ] [ grid--narrow ] folio-inputs">
+
+           
+           
+           
+                          <input class="js--subscribe__newsletter-list" name="newsletter_list" type="hidden" value="getting-simple,sketch-nono-ma,nono-ma">
+                      
+
+           <div class="[ grid__item two-thirds palm--one-whole ]">
+               <input placeholder="Your email address" class="[ js--subscribe__email ] [ u-case-input-lower ]" name="EMAIL" type="email">
+           </div>
+           <div class="[ grid__item one-third palm--one-whole ]">
+                                    <input class="[ js--subscribe__submit ] [ button--background-white ]" type="submit" value="Sign Up">
+                           </div>
+
+    </div>
+
+    </form>
+
+    
+    </div>
+
+</div>
+</div>
+    </div>
+  
+        <div class="c-credits-v2 c-credits-v2 u-text-align--center">
+    © 2023 <a href="https://nono.ma">Nono Martínez Alonso</a>
+
+</div>
+
+
+  
+</div>
+
+<script src="/folio/js/manifest.js?id=3c768977c2574a34506e"></script>
+<script src="/folio/js/vendor.js?id=7a5183b8baf57d818960"></script>
+<script src="/folio/js/folio.js?id=fed70099f3471281fc4c"></script>
+<script>
+	var trans = {"by":"by","expected":"Expected","to-be-notified":"to be notified.","load-more":"load more","continue-reading":"Read&nbsp;More\u2026","receive-our-posts":"Receive my publications via email.","newsletter-privacy":"Subject to MailChimp's <a href=\"https:\/\/mailchimp.com\/legal\/privacy\/\" style=\"opacity:0.6\">Privacy&nbsp;Policy<\/a>&nbsp;&&nbsp;<a href=\"https:\/\/mailchimp.com\/legal\/terms\/\" style=\"opacity:0.6\">Terms<\/a>.","your-email-address":"Your email address","subscribe":"Subscribe","subscribe_button_text":"Sign Up","newsletter":"Newsletter","follow":"Follow","to_receive_our_updates":"Receive my publications via email.","email_is_not_valid":"Something is not right with that email.","thanks_for_subscribing":"Thanks for subscribing!","something_is_not_working_well":"Hmm. Something is not working well.","writing":"Writing","about-me":"About","scheduled-for":"Scheduled for","this-page-is-hidden":"This page is hidden.","preview-of-unpublished-page":"This is a preview of an unpublished page.","invalid-credentials":"Invalid email or password"};
+</script>
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad();
+  </script>
+
+</body>
+</html>

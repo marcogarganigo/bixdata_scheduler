@@ -18,7 +18,47 @@
 <p>Status: {{ status }}</p>
 
     </div>
+
+<div class="container">
+    <div class="row">
+        {% for key, value in data_functions.items %}
+            <div class="col-4">
+                <b>{{ key|title }}</b>
+                <br>
+                {% for v in value %}
+                    {% if key == 'stato' %}
+                        <button class="btn btn-primary" onclick="changeStatus('{{ v }}')">{{ v }}</button>
+                        <br>
+                    {% else %}
+                        <p>{{ v }}</p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
 </div>
+
+
+
+
+</div>
+
+    <script>
+    function changeStatus(a) {
+        alert(a)
+        $.ajax({
+            url: "{% url 'change_status' %}",
+            type: "POST",
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'status': 'Running'
+            },
+            success: function (data) {
+                console.log(data);
+            }
+        });
+    }
+    </script>
 
 
 

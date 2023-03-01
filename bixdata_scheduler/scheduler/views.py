@@ -5,6 +5,7 @@ from django.contrib import messages
 from .forms import LoginForm
 from apscheduler.schedulers.background import BackgroundScheduler
 from django.db import connection
+import requests
 
 # Scheduler
 scheduler = BackgroundScheduler()
@@ -28,13 +29,12 @@ def get_render_login(request):
     return render(request, 'login.html', {'form': form})
 
 
-@login_required(login_url='/login/')
 def get_render_logout(request):
     logout(request)
     return render(request, 'login.html')
 
 
-@user_passes_test(lambda u: u.is_superuser)
+@user_passes_test(lambda u: u.is_superuser, login_url='login')
 def get_render_index(request):
     datas = {
         'dealuser': 'donato',
@@ -42,14 +42,10 @@ def get_render_index(request):
     }
 
     def data():
-        dealuser_toinsert = datas['dealuser']
-        dealname_toinsert = datas['dealname']
-
-        # check if the data already exists in the db and if not, insert it
         with connection.cursor() as cursor:
-            cursor.execute(
-                "INSERT INTO test (dealname, dealuser) VALUES (%s, %s)", [dealuser_toinsert, dealname_toinsert])
-        print('data added')
+            cursor.execute("SELECT * FROM sys_scheduler_tasks WHERE id = 2")
+            row = cursor.fetchone()
+            print(row)
 
     def action1():
         print('--function started--')
@@ -63,14 +59,27 @@ def get_render_index(request):
         # Update the status variable based on whether the job is active or not
         if is_active:
             status = 'Running'
+            # Set active to 1
+            with connection.cursor() as cursor:
+                cursor.execute("UPDATE sys_scheduler_tasks SET active = 1 WHERE id = 2")
         else:
             status = 'Stopped'
+
+        # Curl request
+        url = 'https://swissbix.freshdesk.com/api/v2/tickets/1007806'
+        auth = ('CKSOYa2wpqgL1xTUQTHq', 'X')
+        headers = {'Content-Type': 'application/json'}
+        response = requests.get(url, headers=headers, auth=auth)
+        print(response.text)
 
         return render(request, 'index.html', {'datas': datas, 'status': status})
 
     def stopAct1():
         print('--function stopped--')
         scheduler.remove_job('data')
+        # Set active to 0
+        with connection.cursor() as cursor:
+            cursor.execute("UPDATE sys_scheduler_tasks SET active = 0 WHERE id = 2")
 
     if request.method == 'POST':
         if 'start' in request.POST:
@@ -88,4 +97,27 @@ def get_render_index(request):
     else:
         status = 'Stopped'
 
-    return render(request, 'index.html', {'datas': datas, 'status': status})
+
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT funzione, status, active FROM sys_scheduler_tasks")
+        rows = cursor.fetchall()
+        nomi = [row[0] for row in rows]
+        stati = [row[1] for row in rows]
+        attivo = [row[2] for row in rows]
+        data_functions = {
+            'nome': nomi,
+            'stato': stati,
+            'attivo': attivo
+            }
+
+        context = {'data_functions': data_functions}
+
+    return render(request, 'index.html', {'datas': datas, 'status': status, **context})
+
+
+
+def change_status(request):
+
+
+
+    return render(request, 'index.html')
