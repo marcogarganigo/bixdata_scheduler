@@ -7,6 +7,14 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from django.db import connection
 import requests
 
+def dictfetchall(cursor):
+    "Return all rows from a cursor as a dict"
+    columns = [col[0] for col in cursor.description]
+    return [
+        dict(zip(columns, row))
+        for row in cursor.fetchall()
+    ]
+
 # Scheduler
 scheduler = BackgroundScheduler()
 scheduler.start()
@@ -50,20 +58,31 @@ def get_render_index(request):
     def action1():
         print('--function started--')
         job = scheduler.get_job('data')
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT id, status, active FROM sys_scheduler_tasks")
+            rows = cursor.fetchall()
+            for row in rows:
+                id = row[0]
+                status = row[1]
+                active = row[2]
+                if status == 'active':
+                    cursor.execute("UPDATE sys_scheduler_tasks SET active = 1 WHERE id = %s", [id])
+                else:
+                    print('non attivata')
         if job is None:
             scheduler.add_job(data, 'interval', seconds=5, id='data')
             is_active = True
+
         else:
             is_active = job.next_run_time is not None
 
+
         # Update the status variable based on whether the job is active or not
         if is_active:
-            status = 'Running'
-            # Set active to 1
-            with connection.cursor() as cursor:
-                cursor.execute("UPDATE sys_scheduler_tasks SET active = 1 WHERE id = 2")
+            status_func = 'Running'
+
         else:
-            status = 'Stopped'
+            status_func = 'Stopped'
 
         # Curl request
         url = 'https://swissbix.freshdesk.com/api/v2/tickets/1007806'
@@ -72,14 +91,14 @@ def get_render_index(request):
         response = requests.get(url, headers=headers, auth=auth)
         print(response.text)
 
-        return render(request, 'index.html', {'datas': datas, 'status': status})
+        return render(request, 'index.html', {'datas': datas, 'status_func': status_func})
 
     def stopAct1():
         print('--function stopped--')
         scheduler.remove_job('data')
         # Set active to 0
         with connection.cursor() as cursor:
-            cursor.execute("UPDATE sys_scheduler_tasks SET active = 0 WHERE id = 2")
+            cursor.execute("UPDATE sys_scheduler_tasks SET active = 0")
 
     if request.method == 'POST':
         if 'start' in request.POST:
@@ -91,33 +110,46 @@ def get_render_index(request):
     # simply render the index template with the current status
     job = scheduler.get_job('data')
     if job is None:
-        status = 'Stopped'
+        status_func = 'Stopped'
     elif job.next_run_time is not None:
-        status = 'Running'
+        status_func = 'Running'
     else:
-        status = 'Stopped'
+        status_func = 'Stopped'
 
 
     with connection.cursor() as cursor:
-        cursor.execute("SELECT funzione, status, active FROM sys_scheduler_tasks")
-        rows = cursor.fetchall()
-        nomi = [row[0] for row in rows]
-        stati = [row[1] for row in rows]
-        attivo = [row[2] for row in rows]
+        cursor.execute("SELECT funzione, id, status, active FROM sys_scheduler_tasks")
+        rows = dictfetchall(cursor)
         data_functions = {
-            'nome': nomi,
-            'stato': stati,
-            'attivo': attivo
-            }
 
-        context = {'data_functions': data_functions}
+            'functions': rows
+        }
+        print(data_functions)
 
-    return render(request, 'index.html', {'datas': datas, 'status': status, **context})
+    return render(request, 'index.html', {'datas': datas, 'status_func': status_func, 'data_functions': data_functions})
 
 
 
 def change_status(request):
+    if request.method == 'POST':
+        status = request.POST.get('status')
+        id = request.POST.get('id')
+        if status == 'active':
+            status = 'inactive'
+        else:
+            status = 'active'
+
+        with connection.cursor() as cursor:
+            cursor.execute("UPDATE sys_scheduler_tasks SET status = %s WHERE id = %s", [status, id])
+
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT funzione, status, active FROM sys_scheduler_tasks")
+            rows = dictfetchall(cursor)
+            data_functions = {
+
+                'functions': rows
+            }
+            print(data_functions)
 
 
-
-    return render(request, 'index.html')
+    return render(request, 'index.html', data_functions)

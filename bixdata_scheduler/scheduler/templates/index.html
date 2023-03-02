@@ -15,28 +15,18 @@
         <button id="stop1" type="submit" value="stop" name="stop" class="btn btn-danger">Stop action 1</button>
         </form>
         <div id="status-act1" style="background-color: {% if status == 'Running' %}green{% else %}red{% endif %}; width: 7px; height: 7px"></div>
-<p>Status: {{ status }}</p>
+<p>Status: {{ status_func }}</p>
 
     </div>
 
-<div class="container">
-    <div class="row">
-        {% for key, value in data_functions.items %}
-            <div class="col-4">
-                <b>{{ key|title }}</b>
-                <br>
-                {% for v in value %}
-                    {% if key == 'stato' %}
-                        <button class="btn btn-primary" onclick="changeStatus('{{ v }}')">{{ v }}</button>
-                        <br>
-                    {% else %}
-                        <p>{{ v }}</p>
-                    {% endif %}
-                {% endfor %}
-            </div>
-        {% endfor %}
-    </div>
-</div>
+
+{% for function in data_functions.functions %}
+    {{ function.funzione }}
+    <button id="{{ function.id }}" onclick="changeStatus( {{ function.id }}, '{{ function.status }}')" type="submit" value="start" name="start" class="btn btn-success"> {{ function.status }}</button>
+    <br>
+    <br>
+{% endfor %}
+
 
 
 
@@ -44,17 +34,17 @@
 </div>
 
     <script>
-    function changeStatus(a) {
-        alert(a)
+    function changeStatus(id, status) {
         $.ajax({
             url: "{% url 'change_status' %}",
             type: "POST",
             data: {
                 'csrfmiddlewaretoken': '{{ csrf_token }}',
-                'status': 'Running'
+                'id': id,
+                'status': status
             },
             success: function (data) {
-                console.log(data);
+                window.location.reload();
             }
         });
     }
