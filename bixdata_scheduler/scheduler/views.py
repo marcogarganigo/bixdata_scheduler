@@ -6,6 +6,7 @@ from .forms import LoginForm
 from apscheduler.schedulers.background import BackgroundScheduler
 from django.db import connection
 import requests
+import time
 
 def dictfetchall(cursor):
     "Return all rows from a cursor as a dict"
@@ -77,13 +78,6 @@ def get_render_index(request):
             is_active = job.next_run_time is not None
 
 
-        # Update the status variable based on whether the job is active or not
-        if is_active:
-            status_func = 'Running'
-
-        else:
-            status_func = 'Stopped'
-
         # Curl request
         url = 'https://swissbix.freshdesk.com/api/v2/tickets/1007806'
         auth = ('CKSOYa2wpqgL1xTUQTHq', 'X')
@@ -91,7 +85,21 @@ def get_render_index(request):
         response = requests.get(url, headers=headers, auth=auth)
         print(response.text)
 
-        return render(request, 'index.html', {'datas': datas, 'status_func': status_func})
+        # Update the status variable based on whether the job is active or not
+        if is_active:
+            status_func = 'Running'
+        else:
+            status_func = 'Stopped'
+
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT funzione, id, status, active FROM sys_scheduler_tasks")
+            rows = dictfetchall(cursor)
+            data_functions = {
+                'functions': rows
+            }
+            print(data_functions)
+
+        return render(request, 'index.html', {'datas': datas, 'status_func': status_func, 'data_functions': data_functions})
 
     def stopAct1():
         print('--function stopped--')
@@ -125,6 +133,7 @@ def get_render_index(request):
             'functions': rows
         }
         print(data_functions)
+
 
     return render(request, 'index.html', {'datas': datas, 'status_func': status_func, 'data_functions': data_functions})
 
