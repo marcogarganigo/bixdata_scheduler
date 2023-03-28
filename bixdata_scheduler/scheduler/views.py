@@ -8,13 +8,12 @@ from django.db import connection
 import requests
 import time
 
+
 def dictfetchall(cursor):
     "Return all rows from a cursor as a dict"
     columns = [col[0] for col in cursor.description]
-    return [
-        dict(zip(columns, row))
-        for row in cursor.fetchall()
-    ]
+    return [dict(zip(columns, row)) for row in cursor.fetchall()]
+
 
 # Scheduler
 scheduler = BackgroundScheduler()
@@ -40,7 +39,7 @@ def get_render_login(request):
 
 def get_render_logout(request):
     logout(request)
-    return render(request, 'login.html')
+    return redirect('login')
 
 
 @user_passes_test(lambda u: u.is_superuser, login_url='login')
@@ -73,17 +72,19 @@ def get_render_index(request):
         if job is None:
             scheduler.add_job(data, 'interval', seconds=5, id='data')
             is_active = True
-
         else:
             is_active = job.next_run_time is not None
 
+        # Create a list to hold log messages
+        log = []
 
-        # Curl request
+        # Add log messages during execution of background job
+        log.append('Curl request started')
         url = 'https://swissbix.freshdesk.com/api/v2/tickets/1007806'
         auth = ('CKSOYa2wpqgL1xTUQTHq', 'X')
         headers = {'Content-Type': 'application/json'}
         response = requests.get(url, headers=headers, auth=auth)
-        print(response.text)
+        log.append(f'Curl request completed with status code {response.status_code}')
 
         # Update the status variable based on whether the job is active or not
         if is_active:
@@ -94,12 +95,12 @@ def get_render_index(request):
         with connection.cursor() as cursor:
             cursor.execute("SELECT funzione, id, status, active FROM sys_scheduler_tasks")
             rows = dictfetchall(cursor)
-            data_functions = {
-                'functions': rows
-            }
+            data_functions = {'functions': rows}
             print(data_functions)
 
-        return render(request, 'index.html', {'datas': datas, 'status_func': status_func, 'data_functions': data_functions})
+        # Pass log messages to template context
+        return render(request, 'index.html',
+                      {'datas': datas, 'status_func': status_func, 'data_functions': data_functions, 'log': log})
 
     def stopAct1():
         print('--function stopped--')
