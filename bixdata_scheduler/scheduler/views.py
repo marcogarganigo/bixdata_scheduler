@@ -50,10 +50,12 @@ def get_render_index(request):
     }
 
     def data():
+            sync_company()
+
+
+    def sync_company():
         with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM sys_scheduler_tasks WHERE id = 2")
-            row = cursor.fetchone()
-            print(row)
+            cursor.execute("INSERT INTO user_system_log(date, hour, note, function) values (now(), now(), 'ok', 'sync_company')")
 
     def action1():
         print('--function started--')
@@ -163,3 +165,17 @@ def change_status(request):
 
 
     return render(request, 'index.html', data_functions)
+
+
+def get_log(request):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM user_system_log")
+        rows = dictfetchall(cursor)
+        log = 'ijabfjhuabfzhcvouhcwauc'
+        data_log = {
+
+            'log': log
+        }
+        print(data_log)
+
+        return render(request, 'index.html', data_log)

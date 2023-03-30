@@ -24,19 +24,14 @@
     {{ function.funzione }}
     <button id="{{ function.id }}" onclick="changeStatus( {{ function.id }}, '{{ function.status }}')" type="submit" value="start" name="start" class="btn btn-success"> {{ function.status }}</button>
     <div class="log-wrapper">
-        <p id="log-{{ function.id }}" class="logs" style="display: none">{% if log %}
-  <ul>
-  {% for message in log %}
-    <li>{{ message }}</li>
-  {% endfor %}
-  </ul>
-{% endif %}
+        <p id="log-{{ function.id }}" class="logs" style="display: none">
         </p>
         <button id="button-{{ function.id }}" class="btn btn-outline-secondary" onclick="showLog(this.id)">log</button>
     </div>
     <br>
     <br>
 {% endfor %}
+    <h1 id="logg">{{ data_log.log }}</h1>
 
     </div>
 
@@ -67,6 +62,24 @@
                 }
             });
         }
+
+        $(document).ready(function() {
+    $.ajax({
+        url: "{% url 'get_log' %}",
+        type: 'POST',
+         data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+        success: function(data) {
+            console.log(data);
+        },
+        error: function(xhr, status, error) {
+            console.log(error);
+            );
+        }
+    });
+});
+
     </script>
 
     <style>
