@@ -22,11 +22,11 @@
 
         {% for function in data_functions.functions %}
     {{ function.funzione }}
-    <button id="{{ function.id }}" onclick="changeStatus( {{ function.id }}, '{{ function.status }}')" type="submit" value="start" name="start" class="btn btn-success"> {{ function.status }}</button>
+    <button id="{{ function.id }}" onclick="changeStatus('{{ function.id }}', '{{ function.status }}')" type="submit" value="start" name="start" class="btn btn-success">{{ function.status }}</button>
     <div class="log-wrapper">
         <p id="log-{{ function.id }}" class="logs" style="display: none">
         </p>
-        <button id="button-{{ function.id }}" class="btn btn-outline-secondary" onclick="showLog(this.id)">log</button>
+        <button id="button-{{ function.id }}" class="btn btn-outline-secondary" onclick="showLog(this.id); getLog('{{ function.funzione }}', 'log-{{ function.id }}')">log</button>
     </div>
     <br>
     <br>
@@ -63,22 +63,26 @@
             });
         }
 
+function getLog(function_name, id_log) {
         $(document).ready(function() {
     $.ajax({
         url: "{% url 'get_log' %}",
         type: 'POST',
          data: {
+                    'function_name': function_name,
                     'csrfmiddlewaretoken': '{{ csrf_token }}',
                 },
         success: function(data) {
             console.log(data);
+            document.getElementById(id_log).innerHTML = data.log;
+
         },
         error: function(xhr, status, error) {
-            console.log(error);
-            );
+
         }
     });
 });
+}
 
     </script>
 

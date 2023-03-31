@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import user_passes_test, login_required
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -7,6 +8,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from django.db import connection
 import requests
 import time
+import json
+from datetime import datetime
 
 
 def dictfetchall(cursor):
@@ -50,12 +53,12 @@ def get_render_index(request):
     }
 
     def data():
-            sync_company()
-
+        sync_company()
 
     def sync_company():
         with connection.cursor() as cursor:
-            cursor.execute("INSERT INTO user_system_log(date, hour, note, function) values (now(), now(), 'ok', 'sync_company')")
+            cursor.execute(
+                "INSERT INTO user_system_log(date, hour, note, function) values (now(), now(), 'ok', 'funzionetest2')")
 
     def action1():
         print('--function started--')
@@ -127,7 +130,6 @@ def get_render_index(request):
     else:
         status_func = 'Stopped'
 
-
     with connection.cursor() as cursor:
         cursor.execute("SELECT funzione, id, status, active FROM sys_scheduler_tasks")
         rows = dictfetchall(cursor)
@@ -137,9 +139,7 @@ def get_render_index(request):
         }
         print(data_functions)
 
-
     return render(request, 'index.html', {'datas': datas, 'status_func': status_func, 'data_functions': data_functions})
-
 
 
 def change_status(request):
@@ -163,19 +163,27 @@ def change_status(request):
             }
             print(data_functions)
 
-
     return render(request, 'index.html', data_functions)
 
 
 def get_log(request):
+    function = request.POST.get('function_name')
     with connection.cursor() as cursor:
-        cursor.execute("SELECT * FROM user_system_log")
-        rows = dictfetchall(cursor)
-        log = 'ijabfjhuabfzhcvouhcwauc'
+        cursor.execute("SELECT * FROM user_system_log where function = %s", [function])
+        rows = cursor.fetchall()
+
+        text = ""
+        for row in rows:
+            text += ",".join(str(value) for value in row)
+
+        text = text.split(",")[-4:]
+        text = " ".join(text)
+
         data_log = {
-
-            'log': log
+            'log': text
         }
-        print(data_log)
+        print(text)
 
-        return render(request, 'index.html', data_log)
+        return JsonResponse(data_log, safe=False)
+
+
